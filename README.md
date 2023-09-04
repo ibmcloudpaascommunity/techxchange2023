@@ -1,4 +1,21 @@
-# Lab 1.
+# IBM Cloud TechXchange 2023 : IBM Cloud Satellite Lab 
+
+
+
+Lab  | Description
+---|---
+[Lab 1](#Lab-1) | Deploying Red Hat Open Shift in Satellite Location
+[Lab 2](#Lab-2) | Day Two operations
+
+---
+
+<br>
+
+<br>
+
+---
+
+# Lab 1
 
 ## Deploy Red Hat OpenShift on Satellite Location
 
@@ -122,9 +139,20 @@ During this time, we will let the cluster go through the provisioning process an
 
 <br>
 
+## Check the status of your Red Hat OpenShift cluster
+
+At this point you should have a healthy Red Hat OpenShift cluster running in the Satellite location. Check the status of your cluster on the cluster detail page. If your cluster shows that your "Ingress status" is in "Critical" state, you may need to wait a few more moments for it to become "Healthy".
+
+Exmaple: Red Hat OpenShift cluster Ingress in Critical Status
+![Create Service](images/createcluster-14-critical.png)
+
+Exmaple: Red Hat OpenShift cluster Ingress in Healthy Status
+![Create Service](images/createcluster-14-healthy.png)
+
+
 ## Publicly expose the cluster
 
-At this point you should have a healthy Red Hat OpenShift cluster running in the Satellite location. The Red Hat OpenShift console can be accessed via the private network only. You will now take steps to adjust the cluster configuration to allow for the console service to be accessed by the public IPs.
+The Red Hat OpenShift console can be accessed via the private network only. You will now take steps to adjust the cluster configuration to allow for the console service to be accessed by the public IPs.
 
 From the IBM Cloud Console, open the IBM Cloud Shell by clicking the Cloud Shell icon in the top right.
 
@@ -149,7 +177,7 @@ In the following block of code, you will capture the private and public IPs of t
 ```sh
 # Get the private IPs for the worker nodes of the OpenShift cluster
 OLDIP1=$(ibmcloud is instances | grep student[0-9]*-worker-1 | awk '{print $4}')
-OLDIP1=$(ibmcloud is instances | grep student[0-9]*-worker-2 | awk '{print $4}')
+OLDIP2=$(ibmcloud is instances | grep student[0-9]*-worker-2 | awk '{print $4}')
 
 # Get the public IPs for the worker nodes of the OpenShift cluster
 NEWIP1=$(ibmcloud is instances | grep student[0-9]*-worker-1 | awk '{print $5}')
@@ -171,7 +199,7 @@ ibmcloud oc nlb-dns rm classic --cluster $CLUSTERID --nlb-host $NLBHOST --ip $OL
 ibmcloud oc nlb-dns ls --cluster $CLUSTERID
 ```
 
-Now you can test the openshift console. You may need to wait a few minutes for the DNS TTL to lapse.
+Now you can test the openshift console. You may need to wait a few minutes for the DNS TTL to lapse. This may take up to 10 minutes.
 
 <br>
 
@@ -197,7 +225,9 @@ Now you can test the openshift console. You may need to wait a few minutes for t
 
 <br>
 
-# Lab 2. Setup Day two operational tools and deploy sample application
+# Lab 2
+
+## Setup Day two operational tools and deploy sample application
 
 In this lab you will be configuring IBM Cloud Logging and IBM Cloud Monitoring on the OpenShift cluster. You will perform various steps on the command line. You can use the IBM Cloud Shell to issue the IBM Cloud and OpenShift CLI commands in this lab. You will need to first get a Red Hat OpenShift login command from your cluster to login via the CLI.
 
