@@ -225,23 +225,39 @@ Now you can test the openshift console. Click the "OpenShift web console" button
 
 ![Cloud Shell](images/cluster-detail-console-button.png)
 
-<br>
+If successful, you should now be logged into the Red Hat OpenShift on IBM Cloud cluster.
 
-<br>
-
-<br>
-
-----
+![Cloud Shell](images/openshift-console-login.png)
 
 <br>
 
 ----
 
-# *** LAB 1 COMPLETED ***
+<br>
+
+# ********* LAB 1 COMPLETED *********
 
 <br>
 
-----
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
 
 <br>
 
