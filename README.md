@@ -1,108 +1,104 @@
-<style>
-red { color: red }
-yellow { color: yellow }
-</style>
-
 # Lab 1.
 
 ## Deploy Red Hat OpenShift on Satellite Location
 
-### In this lab you will be building a Red Hat OpenShift Cluster running in a Satellite Location. The Satellite Location service and a Satellite Control Plane have already been configured that will be used in this lab to deploy additional cloud services. In this Satellite location, you will have two virtual machines dedicated to you that will be utilized as workers for the Red Hat OpenShift cluster that you will be provisioning. These hosts have already been attached to the Satellite location.
+In this lab you will be building a Red Hat OpenShift Cluster running in a Satellite Location. The Satellite Location service and a Satellite Control Plane have already been configured that will be used in this lab to deploy additional cloud services. In this Satellite location, you will have two virtual machines dedicated to you that will be utilized as workers for the Red Hat OpenShift cluster that you will be provisioning. These hosts have already been attached to the Satellite location.
 
 ### Log in to the IBM Cloud console
 
-### For this environment you will use a custom login screen to login to the IBM Cloud console. Please follow the link below and use the credentials provided to you by the instructors. The link to the custom IBM Cloud Login screen can also be found in the bookmark bar of the browser on your computer.
+For this environment you will use a custom login screen to login to the IBM Cloud console. Please follow the link below and use the credentials provided to you by the instructors. The link to the custom IBM Cloud Login screen can also be found in the bookmark bar of the browser on your computer.
 
 [IBM Cloud console login](https://cloud.ibm.com/authorize/techxchange23satellite)
 
 ![Login](images/loginpage.png)
 
-### When you login, you will land on the dashboard screen for the account. From here you will want to navigate to the Satellite Locations screen. Expand the navigation menu by clicking on the top left navigation. Mouse over the Satellite tab, and select Locations from the pop out menu.
+When you login, you will land on the dashboard screen for the account. From here you will want to navigate to the Satellite Locations screen. Expand the navigation menu by clicking on the top left navigation. Mouse over the Satellite tab, and select Locations from the pop out menu.
 
 ![Satellite Menu](images/satellitepopoutmenu.png)
 
-### On the Locations screen, you will see a location already created with a name of techxchange (or similar). We will use this location. Click this location to navigate to the location detail screen.
+On the Locations screen, you will see a location already created with a name of techxchange (or similar). We will use this location. Click this location to navigate to the location detail screen.
 
 ![Locations](images/locations-1.png)
 
-### Here you will see the details of the current location and should be in a "Normal" state. Review the information on this screen. Make certain that you see "Hosts available" is two, and "Hosts total" is five.
+Here you will see the details of the current location and should be in a "Normal" state. Review the information on this screen. Make certain that you see "Hosts available" is two, and "Hosts total" is five.
 
-<yellow>Please locate an instructor if your location is currently in a different state, or if you do not see the available hosts.</yellow>
+** Please locate an instructor if your location is currently in a different state, or if you do not see the available hosts.
 
 ![Location Detail](images/locations-2.png)
 
-### The next step will be to start to deploy a new service to the Satellite location. From the left navigation, click Services. Here you will see the Satellite service with a cluster name "Control plane". This is the control plane previously created by the lab instructors. In addition to being the control plane for the Satellite lcoation, the control plane hosts will be used as the master nodes for the Red Hat OpenShift cluster you will create.
+The next step will be to start to deploy a new service to the Satellite location. From the left navigation, click Services. Here you will see the Satellite service with a cluster name "Control plane". This is the control plane previously created by the lab instructors. In addition to being the control plane for the Satellite lcoation, the control plane hosts will be used as the master nodes for the Red Hat OpenShift cluster you will create.
 
 ![Location Services](images/locations-3.png)
 
-### Click on "Create services" button on the top right of the table. A popout of available services will be displayed. This is a list of the available services that can be currently deployed to a Satellite location. You will click "Red Hat OpenShift on IBM Cloud". A new window should open, and this is where you will start to make the selections to provision a Red Hat OpenShift on IBM Cloud managed cluster into your Satellite location.
+Click on "Create services" button on the top right of the table. A popout of available services will be displayed. This is a list of the available services that can be currently deployed to a Satellite location. You will click "Red Hat OpenShift on IBM Cloud". A new window should open, and this is where you will start to make the selections to provision a Red Hat OpenShift on IBM Cloud managed cluster into your Satellite location.
 
 ![Create Service](images/createservice-1.png)
 
-### Here you will select the various options to customize your Red Hat OpenShift cluster. We will go through each of these options individually. Please make certain to select the appropriate options and naming conventions, as some of the lab requires this consistency.
+Here you will select the various options to customize your Red Hat OpenShift cluster. We will go through each of these options individually. Please make certain to select the appropriate options and naming conventions, as some of the lab requires this consistency.
 
-### By default, "Custom cluster" should be selected. You will leave this option selected.
+By default, "Custom cluster" should be selected. You will leave this option selected.
 
 ![Create Service](images/createcluster-1.png)
 
-### For Infrastructure, "Satellite" should be selected by deafault since we came in from the Satellite location Services screen. Leave this option selected.
+For Infrastructure, "Satellite" should be selected by deafault since we came in from the Satellite location Services screen. Leave this option selected.
 
 ![Create Service](images/createcluster-2.png)
 
-### Location section, you will need to select the correct resource group. Select the "techxchange-studentXX" resource group, with XX being your assigned student number.
+Location section, you will need to select the correct resource group. Select the "techxchange-studentXX" resource group, with XX being your assigned student number.
 
-### Make certain the Satellite location is selected by the radio button. This should be the only location, and selected by default.
+Make certain the Satellite location is selected by the radio button. This should be the only location, and selected by default.
 
 ![Create Service](images/createcluster-3.png)
 
-### Infrastructure topology, this section should be greyed out, as our hosts are RHEL 8 servers and high availability is created by default.
+Infrastructure topology, this section should be greyed out, as our hosts are RHEL 8 servers and high availability is created by default.
 
 ![Create Service](images/createcluster-4.png)
 
-### Default worker pool: Host operating system for these hosts are RHEL 8. This option should be selected by default. 
+Default worker pool: Host operating system for these hosts are RHEL 8. This option should be selected by default. 
 
-### You will only be using two hosts to provision your cluster, one in zone 1 and zone 2. Uncheck the third zone.
+You will only be using two hosts to provision your cluster, one in zone 1 and zone 2. Uncheck the third zone.
 
-### Each host is also configured with 4 vCPUs and 16GB memory. You will leave the worker pool options as default. You should have 4 vCPU selected and 16 GB memory. Only 1 worker per zone. 
+Each host is also configured with 4 vCPUs and 16GB memory. You will leave the worker pool options as default. You should have 4 vCPU selected and 16 GB memory. Only 1 worker per zone. 
 
 ![Create Service](images/createcluster-5.png)
 
-### IMPORTANT: enter the below host label, replacing the number with your student number. This will be used to look for available hosts in the account to use for the workers. If the host labels do not match, a cluster cannot be provisioned.
+### ** IMPORTANT:
+Enter the below host label, replacing the number with your student number. This will be used to look for available hosts in the account to use for the workers. If the host labels do not match, a cluster cannot be provisioned.
 
 ![Create Service](images/createcluster-6.png)
 
-### If you see the below error message when entering or completing adding the worker pool host label, you may need to uncheck the third zone from the worker pool options above again.
+If you see the below error message when entering or completing adding the worker pool host label, you may need to uncheck the third zone from the worker pool options above again.
 
 ![Create Service](images/createcluster-7.png)
 
-### OpenShift version: we can leave the default recommended version that is set by default.
+OpenShift version: we can leave the default recommended version that is set by default.
 
 ![Create Service](images/createcluster-8.png)
 
-### OpenShift Container Platform (OCP) license: leave "Purchase additional licenses for this cluster" selected.
+OpenShift Container Platform (OCP) license: leave "Purchase additional licenses for this cluster" selected.
 
 ![Create Service](images/createcluster-9.png)
 
-### Satellite Config: Select "Enable cluster admin access for Staellite Config"
+Satellite Config: Select "Enable cluster admin access for Staellite Config"
 
 ![Create Service](images/createcluster-10.png)
 
-### We will leave the Ingress and Encryption options off by default.
+We will leave the Ingress and Encryption options off by default.
 
 ![Create Service](images/createcluster-11.png)
 
-### Under Cluster details, enter a name for your cluster, including your student number. Preferably use the format in the example, as some later CLI commands use this format and can make it easier to paste.
+Under Cluster details, enter a name for your cluster, including your student number. Preferably use the format in the example, as some later CLI commands use this format and can make it easier to paste.
 ### ie: ocp-student1
 
 ![Create Service](images/createcluster-12.png)
 
-### You can now click the "Create" button in the bottom right.
+You can now click the "Create" button in the bottom right.
 
-### If you do not receive any errors, you should then be redirected to a screen that looks like the one below.
+If you do not receive any errors, you should then be redirected to a screen that looks like the one below.
 
 ![Create Service](images/createcluster-13.png)
 
-### During this time, we will let the cluster go through the provisioning process and rejoin back to the lab upon completion.
+During this time, we will let the cluster go through the provisioning process and rejoin back to the lab upon completion.
 
 <br>
 
