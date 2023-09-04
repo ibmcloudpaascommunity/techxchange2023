@@ -5,7 +5,7 @@
 Lab  | Description
 ---|---
 [Lab 1](#Lab-1) | Deploying Red Hat Open Shift in Satellite Location
-[Lab 2](#Lab-2) | Day Two operations
+[Lab 2](#Lab-2) | Day Two Operational Tools and Deploy Sample Application
 
 ---
 
@@ -164,12 +164,31 @@ Now you should see the IBM Cloud Shell interface. Your session is automatically 
 
 Take note of the region in which your session is running in the output of the Cloud Shell. Switch to the appropriate region if required.
 
+### IMPORTANT
 ```sh
-# Students 1-10 use region us-south
+# ONLY Students 1-10 use region us-south
 ibmcloud target -r us-south
 
-# Students 11-20 use region us-east
+# ONLY Students 11-20 use region us-east
 ibmcloud target -r us-east
+
+# Target your student resource group (replace 0 with your student number ie: techxchange-student1)
+ibmcloud target -g techxchange-student0
+```
+
+<br>
+
+In the following block of code, you will capture the public IPs of the control plane nodes. We will need to set the Satellite location DNS to use these IPs.
+```sh
+# Get student location
+LOCATION=$(ibmcloud sat location ls | grep student-[0-9] | awk '{print $1}')
+CPIP1=$(ibmcloud is instances | grep student[0-9]*-controlplane-1 | awk '{print $5}')
+CPIP2=$(ibmcloud is instances | grep student[0-9]*-controlplane-2 | awk '{print $5}')
+CPIP3=$(ibmcloud is instances | grep student[0-9]*-controlplane-3 | awk '{print $5}')
+
+# Set the Satellite location DNS
+ibmcloud sat location dns register --location $LOCATION --ip $CPIP1 --ip $CPIP2 --ip $CPIP3
+
 ```
 
 In the following block of code, you will capture the private and public IPs of the worker nodes. You will then replace the IPs for the Network Load Balancer DNS that exposes the cluster UI. * Note: You may need to alter the command below to match your cluster name if you did not name it with the suggested name format earlier.
@@ -197,9 +216,12 @@ ibmcloud oc nlb-dns rm classic --cluster $CLUSTERID --nlb-host $NLBHOST --ip $OL
 
 # Verify the OCP Cluster DNS is now configured for public access
 ibmcloud oc nlb-dns ls --cluster $CLUSTERID
+
 ```
 
-Now you can test the openshift console. You may need to wait a few minutes for the DNS TTL to lapse. This may take up to 10 minutes.
+Now you can test the openshift console. Click the "OpenShift web console" button. You may need to wait a few minutes for the DNS TTL to lapse. This may take up to 10 minutes.
+
+![Cloud Shell](images/cluster-detail-console-button.png)
 
 <br>
 
