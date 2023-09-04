@@ -308,10 +308,17 @@ Now you should see the IBM Cloud Shell interface. Your session is automatically 
 
 In the IBM Cloud Shell, paste the Red Hat OpenShift login command you copied previously and execute. You will then be authenticated to your cluster.
 
-Again, Alternatively, you could set your cluster context for the OpenShift CLI by getting config details for your cluster via the IBM Cloud CLI. This step is optional if you already followed the process above to login to your cluster for the CLI.
+```sh
+#Example - DO NOT USE
+oc login --token=abcdefgHIJK0123456 --server=https://abcdefgHIJK0123456-ce00.us-south.satellite.appdomain.cloud:31393
+```
+
+Again, Alternatively, you could set your cluster context for the OpenShift CLI by getting config details for your cluster via the IBM Cloud CLI. This step is optional if you already followed the process above to login to your cluster for the CLI. This can alternatively be used later.
 
 ```sh
-ibmcloud oc cluster config --cluster <clustername> --admin
+CLUSTER=$(ibmcloud oc clusters | grep ocp-student[0-9]* | awk '{print $1}')
+ibmcloud oc cluster config --cluster $CLUSTER --admin
+
 ```
 
 <br>
@@ -324,36 +331,74 @@ oc -n default create secret docker-registry all-icr-io --docker-username=ibmapik
 ```
 
 ```sh
-curl -sL https://ibm.biz/install-sysdig-k8s-agent | bash -s -- -a 42db7192-63b3-4e83-82d0-ba72c6451836 -c ingest.us-south.monitoring.cloud.ibm.com -ac 'sysdig_capture_enabled: false' --openshift
+# Set the INGESTKEY variable for region instance
+# ONLY Students 1-10 use region us-south
+REGION=us-south
+INGESTKEY="<TO BE PROVIDED>"
+
+# ONLY Students 11-20 use region us-south
+REGION=us-east
+INGESTKEY="<TO BE PROVIDED>"
 ```
+
+```sh
+# Install the agent
+curl -sL https://ibm.biz/install-sysdig-k8s-agent | bash -s -- -a $INGESTKEY -c ingest.$REGION.monitoring.cloud.ibm.com -ac 'sysdig_capture_enabled: false' --openshift
+```
+
+After executing the install script, check the status of the pods. Wait for the pods to go to "READY" status.
+```sh
+oc get pods -n ibm-observe
+```
+![Cloud Shell](images/cloudshell-monitoring.png)
+
 
 ### Install IBM Cloud Logging Agent to the cluster
 
-In the following steps, you will be deploying the logging agent to your cluster. The steps taken are below for informational, and the commands you need to run are available as well. The agent key is specific to the shared loggin instance of this account.
+In the following steps, you will be deploying the logging agent to your cluster. The steps taken are below for informational, and the commands you need to run are available as well. The agent key is specific to the shared logging instance of this account for your region.
 
-[Setup Logging on OpenShift Cluster](https://cloud.ibm.com/observe/logging/14a8260d-7fd8-42a6-b7fa-db27af9fc223/sources)
-
+Again, the following steps are informational. You can copy and execute the CLI commands to perform the steps.
 1. Create a project. A project is a namespace in a cluster.
-
 2. Create the service account logdna-agent in the cluster namespace ibm-observe.
-
 3. Grant the service account access to the Privileged SCC:
-
 4. Add your secret:
-
 5. Install the OpenShift DaemonSet:
 
 ```sh
-AGENTKEY=730820dfbfead0b294225b418bba680a
-oc adm new-project --node-selector='' ibm-observe
+# Set the REGION and AGENTKEY variables
+
+# ONLY Students 1-10 use region us-south
+REGION=us-south
+AGENTKEY="<TO BE PROVIDED>"
+
+# ONLY Students 11-20 use region us-south
+REGION=us-east
+AGENTKEY="<TO BE PROVIDED>"
+```
+
+```sh
+oc project ibm-observe
 oc create serviceaccount logdna-agent -n ibm-observe
 oc adm policy add-scc-to-user privileged system:serviceaccount:ibm-observe:logdna-agent
 oc create secret generic logdna-agent-key --from-literal=logdna-agent-key=$AGENTKEY -n ibm-observe
-oc create -f https://assets.us-east.logging.cloud.ibm.com/clients/logdna-agent/3/agent-resources-openshift.yaml -n ibm-observe
+oc create -f https://assets.$REGION.logging.cloud.ibm.com/clients/logdna-agent/3/agent-resources-openshift.yaml -n ibm-observe
 ```
+
+After executing the install script, check the status of the pods. Wait for the pods to go to "READY" status.
+```sh
+oc get pods -n ibm-observe | grep logdna
+```
+![Cloud Shell](images/cloudshell-logging.png)
 
 After you configure a log source, launch the IBM Log Analysis UI by selecting Open dashboard. It may take a few minutes before you start seeing logs.
 
+<br>
+
+## ***** Add steps here for accessing "Observability"
+
+<br>
+
+<br>
 
 # Create Container Registry Pull Secret
 
@@ -362,35 +407,131 @@ To configure Red Hat OpenShift Container Platform to pull from Container Registr
 
 Configure Red Hat OpenShift Container Platform to use the image pull secrets by adding the secrets to a service account in each project or by referring to the secret in your pod deployment. You are only required to add the secret to the projects that you want to pull to.
 
-**********
-ibmcloud iam service-id-create techxchange-registry-id --description "Service ID for IBM Cloud Container Registry and Red Hat OpenShift on IBM Cloud"
+```sh
+# Set STUDENT variable for naming, replace 0 with your student number (ie: student1)
+STUDENT=student0
 
+# Create a APIKEY for pull secret
+REGISTRYAPIKEY=$(ibmcloud iam service-api-key-create techxchange-$STUDENT-registry-key techxchange-registry-id --description "API key for service ID and Red Hat OpenShift on IBM Cloud cluster" | grep 'API Key' | awk '{print $3}')
 
-ibmcloud iam service-policy-create ServiceId-d597fefb-f2f5-4d04-b172-39b86cc803e4 --roles Manager --service-name container-registry --region global --resource-type namespace --resource techxchange2023-satellite
+# Create project
+oc new-project techxchange
 
+# Save pull secret to project secrets
+oc create secret docker-registry techxchange-docker-registry --docker-server=icr.io --docker-username=iamapikey --docker-password=$REGISTRYAPIKEY --docker-email=student@ibm.edu
 
-ibmcloud iam service-api-key-create techxchange-registry-key techxchange-registry-id --description "API key for service ID and Red Hat OpenShift on IBM Cloud cluster"
+# To use this secret for pulling images for Pods, link secret to your service account:
+oc secrets link default techxchange-docker-registry --for=pull
 
-oc --namespace default create secret docker-registry techxchange-docker-registry --docker-server=icr.io --docker-username=iamapikey --docker-password=XXXXX --docker-email=student@ibm.edu
-******************
-
-ibmcloud iam service-api-key-create techxchange-registry-key techxchange-registry-id --description "API key for service ID and Red Hat OpenShift on IBM Cloud cluster"
-
-(maybe do this in the UI when deployign the app?)
-
-oc --namespace $APPNAMESPACE create secret docker-registry techxchange-docker-registry --docker-server=icr.io --docker-username=iamapikey --docker-password=$REGISTRYAPIKEY --docker-email=student@ibm.edu
+```
 
 
 # Deploy a sample application
 
-### Need to patch registry if not managed
+Navigate to the Clusters screen
 
-ibmcloud oc cluster config --cluster <cluster> -- admin
+![Cloud Shell](images/cluster-menu.png)
 
-Remove: oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"managementState":"Managed"}}'
+Select your cluster
+
+![Cloud Shell](images/cluster-list.png)
+
+Click on the "OpenShift web console" button. This will open a new window and automatically authenticate you.
+
+![Cloud Shell](images/cluster-detail-web-console-button.png)
+
+Once you are logged in, switch to the Developer view.
+
+![Cloud Shell](images/openshift-switch-developer.png)
+
+From the developer view, switch to the "techxchange" project. You should have created this project on the CLI from steps prior. If you do not see this project listed, you may need to go back to the previous steps.
+
+![Cloud Shell](images/openshift-switch-project.png)
+
+On this screen, you should not see any resources. We will now create a new resource by deploying the sample applciation. Click on the "+Add" button in the navigation, or alternatively, the "Add page" link in the middle of the screen.
+
+![Cloud Shell](images/openshift-add-button.png)
+
+A sample application image has already been placed in the IBM Cloud Container Registry service in the techxchange2023-satellite namespace for this account. The pull-secret created in the steps previously will be used to authenticate to the registry. Click the option for "Container images".
+
+![Cloud Shell](images/openshift-container-images-button.png)
+
+Enter the below image registry information into the "Image name from external registry" box. Make certain it displays "Validated". If you do not see it "Validated" contact an instructor for help. You may need to verify your pull-secret.
+
+```icr.io/techxchange2023-satellite/endpoints:0.0.1```
+
+![Cloud Shell](images/openshift-deploy-app-image.png)
+
+All of the rest of the options you can leave as default. Click the "Create" button to deploy the sample application.
+
+![Cloud Shell](images/openshift-deploy-app-create.png)
+
+You should now see the application deployed and a state similar to the below screenshot. Click on the OpenShift icon in the middle of the deployment to expand a detail window to see more information about the deployment.
+
+![Cloud Shell](images/openshift-deploy-app-deployed.png)
+
+You should see the "Pods" in a "Running" state. This will mean you have successfully pulled the image from the registry and deployed the sample application. You should also see a "Route" was created. Click on the link for the Route to see the application.
+
+![Cloud Shell](images/openshift-deploy-app-deployed2.png)
+
+Clicking the route should have opened a new window/tab in your browser. This sample application will return a JSON result of available endpoints it will respond with.
+
+If you see the beow JSON response, congratulations, you successfully confirmed the running app. Take note of the "/status" endpoint as we will use this for testing. You can now close this window and go back to the OpenShift web console.
+```
+{"endpoints": [{"route": "/status", "description": "returns a random success or failure. failures result in random 400s or 500s"}, {"route": "/server", "description": "returns hostname of the responding server instance"}, {"route": "/utc", "description": "returns current UTC time"}, {"route": "/fibonacci?n=##", "description": "returns a fibonacci sequence given a number (less than 1000), defaults to 100"}, {"route": "/craps", "description": "rolls 2 die"}, {"route": "/fruits", "description": "list of fruits"}, {"route": "/vegetables", "description": "list of vegetables"}, {"route": "/badbeers", "description": "returns list of least favored beers"}]}
+```
+
+Now that you are back in the OpenShift web console, you should still be on the Deployment screen. Click the "copy" button for the Route. We will then go back to an IBM Cloud Shell screen.
+
+![Cloud Shell](images/openshift-deploy-app-copy-route.png)
+
+Create a variable for "APPROUTE" by pasting the copied ROUTE URL into the cloud shell as below.
+
+```APPROUTE=<route url>```
+
+![Cloud Shell](images/app-cloudshell-1.png)
+
+You should now be able to hit the various endpoints by issuing a curl command in the shell and appending a endpoint from the application.
+```sh
+# Return a random status
+curl -i $APPROUTE/status
+```
+
+![Cloud Shell](images/app-cloudshell-2.png)
+
+Enter the below command into the cloud shell and execute. We will leave this running.
+```sh
+while true
+do
+curl $APPROUTE/status
+sleep 2
+done
+```
+
+<br>
+
+## Logging
+
+In another tab, you may already have open, go back to the IBM Cloud Console. You will now navigate to the "Observability" tab in the menu and select "Logging".
+
+![Cloud Shell](images/observe-menu-logging.png)
+
+Depending on your region, based on your student number, click the appropriate "Open dashboard" link.
+
+![Cloud Shell](images/observe-logging-instances.png)
+
+This will log you into the Logging instance that this Satellite location and OpenShift cluster are logging to. You can filter within this dashboard to single out the application we deployed. Click the "Apps" option on top and find the "Endpoints" application, and select it. Then click "Apply".
+
+![Cloud Shell](images/logging-filter-endpoints.png)
+
+You should now only see the "Endpoints" application results in the logs. Since you are still running the CLI loop command from previously, you should continue to see new Logs being reported with the "Status" code being returned. You will notice it returns random status codes. You can expand one of the rows of the logs to see further details of the log item.
+
+![Cloud Shell](images/logging-filter-endpoints-2.png)
+
+Logging may stop displaying, if so, make certain "Live" is active. If it is not, you can click on the "Live" button on the bottom right of the screen. Feel free to look at other logs, or move on to the next section.
 
 
-icr.io/techxchange2023-satellite/endpoints:0.0.1
+### Monitoring
 
-
+![Cloud Shell](images/observe-menu-monitoring.png)
 

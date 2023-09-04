@@ -1,0 +1,19 @@
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.priv
+*.prv
+
+**/*.priv
+**/*.prv
+
+**/.terraform.*
+**/terraform.tfvars
+
+**/.env
+**/*.csv
+
+*.DS_Store
