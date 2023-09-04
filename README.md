@@ -168,10 +168,12 @@ Take note of the region in which your session is running in the output of the Cl
 ```sh
 # ONLY Students 1-10 use region us-south
 ibmcloud target -r us-south
-
+```
+```sh
 # ONLY Students 11-20 use region us-east
 ibmcloud target -r us-east
-
+```
+```sh
 # Target your student resource group (replace 0 with your student number ie: techxchange-student1)
 ibmcloud target -g techxchange-student0
 ```
