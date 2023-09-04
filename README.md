@@ -301,9 +301,7 @@ ibmcloud iam service-policy-create ServiceId-d597fefb-f2f5-4d04-b172-39b86cc803e
 
 ibmcloud iam service-api-key-create techxchange-registry-key techxchange-registry-id --description "API key for service ID and Red Hat OpenShift on IBM Cloud cluster"
 
-WbHJo4t6Qxbz1RAcbQRA7BBeMi8oXqTJ6LoFAeAlQ32X
-
-oc --namespace default create secret docker-registry techxchange-docker-registry --docker-server=icr.io --docker-username=iamapikey --docker-password=WbHJo4t6Qxbz1RAcbQRA7BBeMi8oXqTJ6LoFAeAlQ32X --docker-email=student@ibm.edu
+oc --namespace default create secret docker-registry techxchange-docker-registry --docker-server=icr.io --docker-username=iamapikey --docker-password=XXXXX --docker-email=student@ibm.edu
 ******************
 
 ibmcloud iam service-api-key-create techxchange-registry-key techxchange-registry-id --description "API key for service ID and Red Hat OpenShift on IBM Cloud cluster"
