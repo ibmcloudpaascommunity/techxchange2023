@@ -174,7 +174,7 @@ ibmcloud target -r us-south
 ibmcloud target -r us-east
 ```
 ```sh
-# Target your student resource group (replace 0 with your student number ie: techxchange-student1)
+# Target student resource group (replace 0 with student number ie: techxchange-student1)
 ibmcloud target -g techxchange-student0
 ```
 
