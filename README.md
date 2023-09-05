@@ -501,11 +501,7 @@ curl -i $APPROUTE/status
 
 Enter the below command into the cloud shell and execute. We will leave this running.
 ```sh
-while true
-do
-curl $APPROUTE/status
-sleep 2
-done
+while true;do curl $APPROUTE/status; sleep 1; done
 ```
 
 <br>
@@ -535,3 +531,10 @@ Logging may stop displaying, if so, make certain "Live" is active. If it is not,
 
 ![Cloud Shell](images/observe-menu-monitoring.png)
 
+Depending on your region, based on your student number, click the appropriate "Open dashboard" link.
+
+![Cloud Shell](images/observe-monitoring-instances.png)
+
+This will log you into the Monitoring instance that this Satellite location and OpenShift cluster are sending metrics to.
+
+![Cloud Shell](images/monitoring-dashboard-1.png)
