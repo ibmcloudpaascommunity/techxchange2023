@@ -11,6 +11,19 @@ Lab  | Description
 
 <br>
 
+## Note :
+To cut / paste from your Lab Guide to the VM:
+1. Copy the text in the Lab Guide
+2. In the VM, click the area you want to paste the text
+3. Click the "Send Text" button in the VM command bar
+4. Paste the text in the window in the "Send Text" window
+5. Click the "Send Text" button
+6. Verify the text has been pasted
+
+<br>
+
+<br>
+
 <br>
 
 ---
@@ -394,18 +407,40 @@ After you configure a log source, launch the IBM Log Analysis UI by selecting Op
 
 <br>
 
-## ***** Add steps here for accessing "Observability"
-
 <br>
 
 <br>
+
+# Container Registry
+
+You will be deploying a sample application later in the lab. The image that you will use has already been placed in a IBM Cloud Container Registry namespace for this account. These steps will show you the UI for the Container Registry.
+
+In the IBM Cloud Console, click the menu and select "OpenShift", then click "Container Registry"
+![Cloud Shell](images/container-registry-menu.png)
+
+Click "Namespaces" in the menu. Here you will see a list of the Namespaces for the account
+![Cloud Shell](images/container-registry-namespaces.png)
+
+Next, Click "Repositories". This will show a list of Repositories in the account
+![Cloud Shell](images/container-registry-repos.png)
+
+Next, Click "Images". This will show a list of Images in the account
+![Cloud Shell](images/container-registry-images.png)
 
 # Create Container Registry Pull Secret
 
-To configure Red Hat OpenShift Container Platform to pull from Container Registry, 
+In order to be able to utilize a container image from the IBM Cloud Container Registry for your account, you will need to create a pull secret in your Red Hat OpenShift cluster.
 
+Configure Red Hat OpenShift Container Platform to use the image pull secrets by adding the secrets to a service account in each project or by referring to the secret in your pod deployment. You are only required to add the secret to the projects that you want to pull to. You will only add the pull secret to the "techxchange" project that you create in the following steps.
 
-Configure Red Hat OpenShift Container Platform to use the image pull secrets by adding the secrets to a service account in each project or by referring to the secret in your pod deployment. You are only required to add the secret to the projects that you want to pull to.
+Go back into your IBM Cloud Shell Session or start a new one. If you needed start a new session, you will need to login to your cluster again.
+
+```sh
+# You can skip this step if you already have a existing active session
+CLUSTER=$(ibmcloud oc clusters | grep ocp-student[0-9]* | awk '{print $1}')
+ibmcloud oc cluster config --cluster $CLUSTER --admin
+
+```
 
 ```sh
 # Set STUDENT variable for naming, replace 0 with your student number (ie: student1)
