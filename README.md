@@ -20,6 +20,8 @@ To cut / paste from your Lab Guide to the VM:
 5. Click the "Send Text" button
 6. Verify the text has been pasted
 
+![Copy Paste](images/copypastevm.png)
+
 <br>
 
 <br>
