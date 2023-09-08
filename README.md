@@ -177,6 +177,8 @@ Now you should see the IBM Cloud Shell interface. Your session is automatically 
 
 Take note of the region in which your session is running in the output of the Cloud Shell. Switch to the appropriate region if required.
 
+Enter each of the commands below into the IBM Cloud shell to execute. You can copy and paste either by selecting or by clicking the copy icon in each cell.
+
 ### IMPORTANT
 ```sh
 # ONLY Students 1-10 use region us-south
