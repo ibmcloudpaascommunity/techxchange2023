@@ -188,7 +188,8 @@ ibmcloud target -r us-east
 ```
 ```sh
 # Target student resource group
-ibmcloud target -g techxchange-`whoami`
+STUDENT=$(whoami)
+ibmcloud target -g techxchange-$STUDENT
 ```
 
 <br>
@@ -344,6 +345,7 @@ ibmcloud oc cluster config --cluster $CLUSTER --admin
 The first step, you will need to create a secret in your cluster for the docker registry. Execute the command below in the IBM Cloud Shell.
 ```sh
 oc -n default create secret docker-registry all-icr-io --docker-username=ibmapikey --docker-password=all-icr-io
+
 ```
 
 ```sh
@@ -355,11 +357,13 @@ INGESTKEY="<TO BE PROVIDED>"
 # ONLY Students 11-20 use region us-south
 REGION=us-east
 INGESTKEY="<TO BE PROVIDED>"
+
 ```
 
 ```sh
 # Install the agent
 curl -sL https://ibm.biz/install-sysdig-k8s-agent | bash -s -- -a $INGESTKEY -c ingest.$REGION.monitoring.cloud.ibm.com -ac 'sysdig_capture_enabled: false' --openshift
+
 ```
 
 After executing the install script, check the status of the pods. Wait for the pods to go to "READY" status.
@@ -390,6 +394,7 @@ AGENTKEY="<TO BE PROVIDED>"
 # ONLY Students 11-20 use region us-south
 REGION=us-east
 AGENTKEY="<TO BE PROVIDED>"
+
 ```
 
 ```sh
@@ -398,6 +403,7 @@ oc create serviceaccount logdna-agent -n ibm-observe
 oc adm policy add-scc-to-user privileged system:serviceaccount:ibm-observe:logdna-agent
 oc create secret generic logdna-agent-key --from-literal=logdna-agent-key=$AGENTKEY -n ibm-observe
 oc create -f https://assets.$REGION.logging.cloud.ibm.com/clients/logdna-agent/3/agent-resources-openshift.yaml -n ibm-observe
+
 ```
 
 After executing the install script, check the status of the pods. Wait for the pods to go to "READY" status.
@@ -446,8 +452,8 @@ ibmcloud oc cluster config --cluster $CLUSTER --admin
 ```
 
 ```sh
-# Set STUDENT variable for naming, replace 0 with your student number (ie: student1)
-STUDENT=student0
+# Set STUDENT variable for naming
+STUDENT=$(whoami)
 
 # Create a APIKEY for pull secret
 REGISTRYAPIKEY=$(ibmcloud iam service-api-key-create techxchange-$STUDENT-registry-key techxchange-registry-id --description "API key for service ID and Red Hat OpenShift on IBM Cloud cluster" | grep 'API Key' | awk '{print $3}')
