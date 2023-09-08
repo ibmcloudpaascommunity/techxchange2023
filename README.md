@@ -187,8 +187,8 @@ ibmcloud target -r us-south
 ibmcloud target -r us-east
 ```
 ```sh
-# Target student resource group (replace 0 with student number ie: techxchange-student1)
-ibmcloud target -g techxchange-student0
+# Target student resource group
+ibmcloud target -g techxchange-`whoami`
 ```
 
 <br>
@@ -224,6 +224,9 @@ NLBHOST=$(ibmcloud oc nlb-dns ls --cluster $CLUSTERID | grep ocp-student[0-9]* |
 # Add the NEW Public IPs to the NLB DNS
 ibmcloud oc nlb-dns add --cluster $CLUSTERID --nlb-host $NLBHOST --ip $NEWIP1
 ibmcloud oc nlb-dns add --cluster $CLUSTERID --nlb-host $NLBHOST --ip $NEWIP2
+
+# Pause for 45 seconds
+sleep 45
 
 # Remove the OLD Private IPs from the NLB DNS
 ibmcloud oc nlb-dns rm classic --cluster $CLUSTERID --nlb-host $NLBHOST --ip $OLDIP1
